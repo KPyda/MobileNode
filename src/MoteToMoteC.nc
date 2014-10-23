@@ -22,13 +22,11 @@ module MoteToMoteC
 }
 
 implementation
-{
-	uint8_t dummyVar1 = 123;
-	
+{	
 	event void Boot.booted(){
-    	call Timer.startPeriodic(500);
+    	call Timer.startPeriodic(1000);
     	call AMControl.start();
-  }
+  	}
 	
 	bool RadioBusy = FALSE;
 	message_t packet;
@@ -40,7 +38,6 @@ implementation
   			
 		    MoteToMoteMsg_t *msg = call Packet.getPayload(&packet, sizeof(MoteToMoteMsg_t));
 		   	msg->NodeId = TOS_NODE_ID;
-			msg->Data = dummyVar1;
 		    
 		    if (call AMSend.send(AM_BROADCAST_ADDR, &packet, sizeof(MoteToMoteMsg_t)) == SUCCESS) 
 		    {
@@ -61,7 +58,7 @@ implementation
 	{
 		if(error == 0)
 		{
-			call Leds.led1On();
+			call Leds.led0On();
 		}
 		else
 		{
@@ -82,16 +79,7 @@ implementation
 			//incomingPacket -> NoteId == 2;
 			//nalezy zmienic NoteId i wybrac z którego sensora chcemy otrzymywac dane
 			
-			uint8_t data = incomingPacket->Data;
-			
-			if(data = 1)
-			{
-				call Leds.led2On();
-			}
-			else
-			{
-				call Leds.led2Off();
-			}
+			call Leds.led1Toggle();
 		}
 		return msg;
 	}
